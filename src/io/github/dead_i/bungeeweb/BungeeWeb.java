@@ -15,20 +15,16 @@ import org.eclipse.jetty.server.session.HashSessionManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.security.Password;
-import org.mcstats.Metrics;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class BungeeWeb extends Plugin {
@@ -39,17 +35,6 @@ public class BungeeWeb extends Plugin {
     public void onEnable() {
         // Run metrics
         final Plugin plugin = this;
-        getProxy().getScheduler().runAsync(this, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Metrics metrics = new Metrics(plugin);
-                    metrics.start();
-                } catch (IOException e) {
-                    getLogger().info("Unable to connect to Metrics for plugin statistics.");
-                }
-            }
-        });
 
         // Get configuration
         reloadConfig(this);
@@ -147,7 +132,7 @@ public class BungeeWeb extends Plugin {
             String filename = "lang/" + lang + ".json";
             File file = new File(getDataFolder(), filename);
             if (!file.exists()) file.createNewFile();
-            ByteStreams.copy(getResourceAsStream(filename), new FileOutputStream(file));
+            ByteStreams.copy(getResourceAsStream(filename), Files.newOutputStream(file.toPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,7 +145,7 @@ public class BungeeWeb extends Plugin {
                 dir.mkdir();
                 File readme = new File(dir, "REAMDE.md");
                 readme.createNewFile();
-                ByteStreams.copy(getResourceAsStream(directory + "/README.md"), new FileOutputStream(readme));
+                ByteStreams.copy(getResourceAsStream(directory + "/README.md"), Files.newOutputStream(readme.toPath()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -272,7 +257,7 @@ public class BungeeWeb extends Plugin {
     public static String salt() {
         byte[] salt = new byte[16];
         new SecureRandom().nextBytes(salt);
-        return DatatypeConverter.printBase64Binary(salt).substring(0, 16);
+        return Base64.getEncoder().encodeToString(salt).substring(0, 16);
     }
 
     public static boolean isNumber(String number) {

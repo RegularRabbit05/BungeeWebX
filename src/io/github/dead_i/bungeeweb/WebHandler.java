@@ -6,7 +6,6 @@ import net.md_5.bungee.api.plugin.Plugin;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,14 +39,14 @@ public class WebHandler extends AbstractHandler {
     }
 
     @Override
-    public void handle(String target, Request baseReq, HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+    public void handle(String target, Request baseReq, HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setStatus(HttpServletResponse.SC_OK);
         res.setCharacterEncoding("utf8");
 
         if (target.equals("/")) target = "/index.html";
         String[] path = target.split("/");
 
-        if (target.substring(target.length() - 1).equals("/")) {
+        if (target.endsWith("/")) {
             res.sendRedirect(target.substring(0, target.length() - 1));
             baseReq.setHandled(true);
         }else if (path.length > 2 && path[1].equalsIgnoreCase("api")) {
@@ -118,13 +117,28 @@ public class WebHandler extends AbstractHandler {
     }
 
     public String getContentType(String filename) {
-        MimetypesFileTypeMap map = new MimetypesFileTypeMap();
-        map.addMimeTypes("text/html html htm");
-        map.addMimeTypes("text/javascript js json");
-        map.addMimeTypes("text/css css");
-        map.addMimeTypes("image/jpeg jpg jpeg");
-        map.addMimeTypes("image/gif gif");
-        map.addMimeTypes("image/png png");
-        return map.getContentType(filename.toLowerCase());
+        if (filename == null || filename.lastIndexOf('.') == -1) {
+            return "application/octet-stream";
+        }
+        String extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+        switch (extension) {
+            case "html":
+            case "htm":
+                return "text/html";
+            case "js":
+            case "json":
+                return "text/javascript";
+            case "css":
+                return "text/css";
+            case "jpg":
+            case "jpeg":
+                return "image/jpeg";
+            case "gif":
+                return "image/gif";
+            case "png":
+                return "image/png";
+            default:
+                return "application/octet-stream";
+        }
     }
 }
