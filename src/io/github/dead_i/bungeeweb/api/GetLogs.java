@@ -47,7 +47,7 @@ public class GetLogs extends APICommand {
                     params.add(f);
                 }
             }
-            if (filters.length() > 0) conditions.add("(" + filters.substring(0, filters.length() - 4) + ")");
+            if (!filters.isEmpty()) conditions.add("(" + filters.substring(0, filters.length() - 4) + ")");
         }
 
         String query = req.getParameter("query");
@@ -58,10 +58,10 @@ public class GetLogs extends APICommand {
 
         String qry = "SELECT * FROM `" + BungeeWeb.getConfig().getString("database.prefix") + "log` ";
 
-        if (conditions.size() > 0) {
-            String cond = "WHERE ";
+        if (!conditions.isEmpty()) {
+            StringBuilder cond = new StringBuilder("WHERE ");
             for (String s : conditions) {
-                cond += s + " AND ";
+                cond.append(s).append(" AND ");
             }
             qry += cond.substring(0, cond.length() - 4);
         }

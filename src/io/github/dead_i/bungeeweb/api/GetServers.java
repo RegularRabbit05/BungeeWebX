@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class GetServers extends APICommand {
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public GetServers() {
         super("getservers", "players");
@@ -23,9 +23,9 @@ public class GetServers extends APICommand {
 
     @Override
     public void execute(Plugin plugin, HttpServletRequest req, HttpServletResponse res, String[] args) throws IOException {
-        HashMap<String, HashMap> out = new HashMap<String, HashMap>();
+        HashMap<String, HashMap<String, String>> out = new HashMap<>();
         for (ServerInfo info : plugin.getProxy().getServers().values()) {
-            HashMap<String, String> players = new HashMap<String, String>();
+            HashMap<String, String> players = new HashMap<>();
             int i = 0;
             for (ProxiedPlayer p : info.getPlayers()) {
                 players.put(BungeeWeb.getUUID(p), p.getName());

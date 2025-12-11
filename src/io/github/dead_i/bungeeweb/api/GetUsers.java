@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class GetUsers extends APICommand {
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public GetUsers() {
         super("getusers", "settings.users.list");

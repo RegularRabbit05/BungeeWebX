@@ -1,6 +1,8 @@
-BungeeWeb
+BungeeWebX
 =========
-A self contained proxy-side logger and online control panel designed to give both an overview of your server and provide useful logs through user actions.
+A proxy-side logger and online control panel designed to give both an overview of your server and provide useful logs through user actions.
+
+This fork removes the static assets from the plugin itself moving to them Cloudflare pages. For the dashboard implementation check out https://github.com/RegularRabbit05/BungeeWeb-Static
 
 For further information, please read the project's page in [the Spigot resource section](http://www.spigotmc.org/resources/bungeeweb.802/).
 

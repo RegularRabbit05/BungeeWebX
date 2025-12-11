@@ -20,7 +20,7 @@ public class ChangePassword extends APICommand {
         String current = req.getParameter("currentpass");
         String pass = req.getParameter("newpass");
         String confirm = req.getParameter("confirmpass");
-        if (current != null && pass != null && confirm != null && pass.equals(confirm) && BungeeWeb.getLogin((String) req.getSession().getAttribute("user"), current) != null) {
+        if (current != null && pass != null && pass.equals(confirm) && BungeeWeb.getLogin((String) req.getSession().getAttribute("user"), current) != null) {
             PreparedStatement st = BungeeWeb.getDatabase().prepareStatement("UPDATE `" + BungeeWeb.getConfig().getString("database.prefix") + "users` SET `pass`=?, `salt`=? WHERE `id`=?");
             String salt = BungeeWeb.salt();
             st.setString(1, BungeeWeb.encrypt(req.getParameter("newpass"), salt));

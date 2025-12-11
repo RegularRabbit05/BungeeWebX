@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GetStats extends APICommand {
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public GetStats() {
         super("getstats", "stats");

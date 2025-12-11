@@ -38,13 +38,13 @@ public class EditUser extends APICommand {
 
         String group = req.getParameter("group");
         int groupid = Integer.parseInt(group);
-        if (group != null && !group.isEmpty() && BungeeWeb.isNumber(group)) {
+        if (!group.isEmpty() && BungeeWeb.isNumber(group)) {
             conditions.add("group");
             params.add(groupid);
         }
 
         String id = req.getParameter("id");
-        if (id != null && !id.isEmpty() && BungeeWeb.isNumber(id) && conditions.size() > 0) {
+        if (id != null && !id.isEmpty() && BungeeWeb.isNumber(id) && !conditions.isEmpty()) {
             int power = BungeeWeb.getGroupPower(req);
             if (!conditions.contains("group") || groupid < power) {
                 String cond = "";

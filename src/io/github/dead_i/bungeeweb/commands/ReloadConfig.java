@@ -9,7 +9,7 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class ReloadConfig extends Command {
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public ReloadConfig(Plugin plugin) {
         super("bwreload", "bungeeweb.reload");

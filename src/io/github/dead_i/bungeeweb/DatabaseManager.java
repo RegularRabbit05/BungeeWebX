@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {
-    private List<Connection> connections = new ArrayList<Connection>();
-    private Plugin plugin;
-    private String dsn;
-    private String user;
-    private String pass;
+    private final List<Connection> connections = new ArrayList<>();
+    private final Plugin plugin;
+    private final String dsn;
+    private final String user;
+    private final String pass;
 
     public DatabaseManager(Plugin plugin, String dsn, String user, String pass) {
         this.plugin = plugin;

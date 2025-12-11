@@ -33,9 +33,6 @@ public class BungeeWeb extends Plugin {
     private static DatabaseManager manager;
 
     public void onEnable() {
-        // Run metrics
-        final Plugin plugin = this;
-
         // Get configuration
         reloadConfig(this);
 
@@ -172,7 +169,7 @@ public class BungeeWeb extends Plugin {
         try {
             if (!configFile.exists()) {
                 configFile.createNewFile();
-                ByteStreams.copy(defaultStream, new FileOutputStream(configFile));
+                ByteStreams.copy(defaultStream, Files.newOutputStream(configFile.toPath()));
                 plugin.getLogger().warning("A new configuration file has been created. Please edit config.yml and restart BungeeCord.");
                 return;
             }
@@ -229,8 +226,8 @@ public class BungeeWeb extends Plugin {
         return null;
     }
 
-    public static List getGroupPermissions(int group) {
-        List<Object> permissions = new ArrayList<Object>();
+    public static List<Object> getGroupPermissions(int group) {
+        List<Object> permissions = new ArrayList<>();
 
         for (int i = group; i > 0; i--) {
             String key = "permissions.group" + i;

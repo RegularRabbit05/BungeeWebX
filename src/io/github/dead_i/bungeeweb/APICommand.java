@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public abstract class APICommand {
-    private String name;
+    private final String name;
     private String permission = "";
     private boolean login = false;
 

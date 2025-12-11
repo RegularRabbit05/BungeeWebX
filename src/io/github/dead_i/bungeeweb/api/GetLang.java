@@ -8,6 +8,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
 import java.sql.SQLException;
 
 public class GetLang extends APICommand {
@@ -25,7 +26,7 @@ public class GetLang extends APICommand {
         File file = new File(plugin.getDataFolder(), "lang/" + lang + ".json");
         InputStream stream;
         if (file.exists()) {
-            stream = new FileInputStream(file);
+            stream = Files.newInputStream(file.toPath());
         }else{
             stream = plugin.getResourceAsStream("lang/en.json");
         }

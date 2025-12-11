@@ -8,7 +8,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
 public class PostLoginListener implements Listener {
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public PostLoginListener(Plugin plugin) {
         this.plugin = plugin;

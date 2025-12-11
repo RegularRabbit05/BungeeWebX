@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class ListServers extends APICommand {
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public ListServers() {
         super("listservers", "dashboard");

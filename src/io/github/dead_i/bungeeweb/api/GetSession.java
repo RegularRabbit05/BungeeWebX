@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class GetSession extends APICommand {
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public GetSession() {
         super("getsession", true);

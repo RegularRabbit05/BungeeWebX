@@ -8,7 +8,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
 public class ServerKickListener implements Listener {
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public ServerKickListener(Plugin plugin) {
         this.plugin = plugin;

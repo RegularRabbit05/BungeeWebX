@@ -10,8 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class StatusCheck implements Runnable {
-    private Plugin plugin;
-    private int inc;
+    private final Plugin plugin;
+    private final int inc;
 
     public StatusCheck(Plugin plugin, int inc) {
         this.plugin = plugin;

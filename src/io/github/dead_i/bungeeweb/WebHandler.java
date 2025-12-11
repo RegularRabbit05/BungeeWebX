@@ -6,20 +6,19 @@ import net.md_5.bungee.api.plugin.Plugin;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public class WebHandler extends AbstractHandler {
-    private HashMap<String, APICommand> commands = new HashMap<String, APICommand>();
-    private Plugin plugin;
+    private final HashMap<String, APICommand> commands = new HashMap<>();
+    private final Plugin plugin;
 
     public WebHandler(Plugin plugin) {
         this.plugin = plugin;
@@ -43,19 +42,25 @@ public class WebHandler extends AbstractHandler {
         res.setStatus(HttpServletResponse.SC_OK);
         res.setCharacterEncoding("utf8");
 
+        if (req.getMethod().equals("OPTIONS")) {
+            baseReq.setHandled(true);
+            return;
+        }
+
         if (target.equals("/")) target = "/index.html";
         String[] path = target.split("/");
 
         if (target.endsWith("/")) {
             res.sendRedirect(target.substring(0, target.length() - 1));
             baseReq.setHandled(true);
-        }else if (path.length > 2 && path[1].equalsIgnoreCase("api")) {
+        } else if (path.length > 2 && path[1].equalsIgnoreCase("api")) {
             if (commands.containsKey(path[2])) {
                 try {
+                    res.addHeader("Content-Type", "application/json");
                     APICommand command = commands.get(path[2]);
                     if (command.hasPermission(req)) {
                         command.execute(plugin, req, res, path);
-                    }else{
+                    } else {
                         res.getWriter().print("{ \"error\": \"You do not have permission to perform this action.\" }");
                     }
                 } catch (SQLException e) {
@@ -64,8 +69,9 @@ public class WebHandler extends AbstractHandler {
                 }
                 baseReq.setHandled(true);
             }
-        }else if (path.length > 1 && path[1].equalsIgnoreCase("login")) {
+        } else if (path.length > 1 && path[1].equalsIgnoreCase("login")) {
             ResultSet rs = BungeeWeb.getLogin(req.getParameter("user"), req.getParameter("pass"));
+            res.addHeader("Content-Type", "application/json");
             if (req.getMethod().equals("POST") && rs != null) {
                 try {
                     req.getSession().setAttribute("id", rs.getString("id"));
@@ -76,39 +82,30 @@ public class WebHandler extends AbstractHandler {
                     plugin.getLogger().warning("A MySQL database error occurred.");
                     e.printStackTrace();
                 }
-            }else{
+            } else {
                 res.getWriter().print("{ \"status\": 0 }");
             }
             baseReq.setHandled(true);
-        }else if (path.length > 1 && path[1].equalsIgnoreCase("logout")) {
+        } else if (path.length > 1 && path[1].equalsIgnoreCase("logout")) {
             req.getSession().invalidate();
             res.sendRedirect("/");
             baseReq.setHandled(true);
-        }else if (target.equalsIgnoreCase("/css/theme.css")) {
+        } else if (target.equalsIgnoreCase("/css/theme.css")) {
             String name = BungeeWeb.getConfig().getString("server.theme");
             if (name.isEmpty()) name = "dark";
             InputStream resource = plugin.getResourceAsStream("themes/" + name + ".css");
             if (resource == null) {
                 File file = new File(plugin.getDataFolder(), "themes/" + name + ".css");
                 if (file.exists()) {
-                    ByteStreams.copy(new FileInputStream(file), res.getOutputStream());
+                    ByteStreams.copy(Files.newInputStream(file.toPath()), res.getOutputStream());
                 }
-            }else{
+            } else {
                 ByteStreams.copy(resource, res.getOutputStream());
             }
             baseReq.setHandled(true);
-        }else{
-            String file = "web" + target;
-            InputStream stream = plugin.getResourceAsStream(file);
-            if (stream == null && path.length == 2) {
-                file = "web/index.html";
-                stream = plugin.getResourceAsStream(file);
-            }
-            if (stream != null) {
-                baseReq.setHandled(true);
-                res.setContentType(getContentType(file));
-                ByteStreams.copy(stream, res.getOutputStream());
-            }
+        } else {
+            res.getWriter().print("Not found");
+            baseReq.setHandled(true);
         }
     }
 
